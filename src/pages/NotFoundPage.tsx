@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import PageHeader from '../components/PageHeader'
 
+// หน้า route * สำหรับ URL ที่ไม่มีในเว็บ ต่างจากรายละเอียดเกมที่ API ตอบ 404
 export default function NotFoundPage() {
   return (
     <>

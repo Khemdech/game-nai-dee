@@ -1,5 +1,6 @@
 import PageHeader from "../components/PageHeader";
 
+// กำหนดรูปแบบข้อมูลสมาชิกเพื่อให้การ์ดแต่ละคนใช้ฟิลด์เดียวกัน
 interface TeamMember {
   name: string;
   fullName: string;
@@ -9,6 +10,7 @@ interface TeamMember {
   photo: string;
 }
 
+// ข้อมูลตัวอย่างยังรอข้อมูลจริง; photo ว่างจะแสดงอักษรแรกของชื่อเล่นแทนรูป
 const members: TeamMember[] = [
   {
     name: "John Doe",
@@ -28,6 +30,7 @@ const members: TeamMember[] = [
   },
 ];
 
+// หน้าแสดงข้อมูลทีมและเครดิต API จากข้อมูลในไฟล์นี้ ไม่ได้เรียก RAWG
 export default function AboutPage() {
   return (
     <>
@@ -48,11 +51,13 @@ export default function AboutPage() {
         <p className="mt-1 text-sm text-slate-500">CS319 Mini Project 2</p>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {/* สร้างการ์ดจากรายการสมาชิก และใช้รหัสนักศึกษาเป็น key */}
           {members.map((member) => (
             <article
               key={member.studentId}
               className="min-w-0 rounded-lg border border-slate-200 p-6 text-center"
             >
+              {/* มี path รูปจึงแสดง img; ถ้าไม่มีใช้ fallback ไม่ได้หมายถึงการดักรูปโหลดเสียทุกกรณี */}
               {member.photo ? (
                 <img
                   src={member.photo}

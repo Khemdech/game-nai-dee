@@ -1,47 +1,65 @@
-import {Link} from 'react-router'
-import PageHeader from '../components/PageHeader'
-import { useCompareStore } from '../stores/useCompareStore'
-import {useGameDetail} from '../hooks/useGameDetail'
-
+import { Link } from "react-router";
+import PageHeader from "../components/PageHeader";
+import { useCompareStore } from "../stores/useCompareStore";
+import { useGameDetail } from "../hooks/useGameDetail";
+import CompareGameSearch from "../components/CompareGameSearch";
 
 export default function ComparePage() {
-  const compareIds = useCompareStore((state) => state.compareIds)
-  const removeCompare = useCompareStore((state) => state.removeCompare)
-  const clearCompare = useCompareStore((state) => state.clearCompare)
+  // อ่าน IDs และ actions จาก store เดียวกับ Discover/Details เพื่อให้รายการตรงกันทุกหน้า
+  const compareIds = useCompareStore((state) => state.compareIds);
+  const addCompare = useCompareStore((state) => state.addCompare);
+  const replaceCompare = useCompareStore((state) => state.replaceCompare);
+  const removeCompare = useCompareStore((state) => state.removeCompare);
+  const clearCompare = useCompareStore((state) => state.clearCompare);
 
-  const firstQuery = useGameDetail(compareIds[0])
-  const secondQuery = useGameDetail(compareIds[1])
+  // เรียก Hook สองครั้งระดับบนสุดก่อน map; ช่องที่ ID ยังไม่มีจะไม่เริ่ม request
+  const firstQuery = useGameDetail(compareIds[0]);
+  const secondQuery = useGameDetail(compareIds[1]);
 
-  const firstGame = firstQuery.data
-  const secondGame = secondQuery.data
+  const firstGame = firstQuery.data;
+  const secondGame = secondQuery.data;
 
+  // จับ ID กับผล Query ของแต่ละฝั่งเพื่อใช้ JSX รูปแบบเดียวกัน ไม่สร้าง state ซ้ำ
   const slots = [
-    {id: compareIds[0], query: firstQuery},
-    {id: compareIds[1], query: secondQuery}
-  ]
+    { id: compareIds[0], query: firstQuery },
+    { id: compareIds[1], query: secondQuery },
+  ];
 
-  const comparisonRows = firstGame && secondGame ? [ [
-    'Genre',
-    firstGame.genres.map((genre) => genre.name).join(', ') || 'ไม่ระบุ',
-    secondGame.genres.map((genre) => genre.name).join(', ') || 'ไม่ระบุ'
-  ],
-  [
-    'Released',
-    firstGame.released ?? 'ไม่ระบุ',
-    secondGame.released ?? 'ไม่ระบุ'
-  ],[
-    'RAWG Rating',
-    firstGame.rating.toFixed(1),
-    secondGame.rating.toFixed(1)
-  ],[
-    'Metacritic',
-    String(firstGame.metacritic ?? 'ไม่ระบุ'),
-    String(secondGame.metacritic ?? 'ไม่ระบุ')
-  ],[
-    'Platforms',
-    firstGame.platforms?.map((item) => item.platform.name).join(', ') || 'ไม่ระบุ',
-    secondGame.platforms?.map((item) => item.platform.name).join(', ') || 'ไม่ระบุ'
-  ]] : []
+  // สร้างแถวเมื่อรายละเอียดทั้งสองเกมพร้อมเท่านั้น; ?? รองรับข้อมูลที่ขาดโดยไม่แทนคะแนน 0
+  const comparisonRows =
+    firstGame && secondGame
+      ? [
+          [
+            "Genre",
+            firstGame.genres.map((genre) => genre.name).join(", ") || "ไม่ระบุ",
+            secondGame.genres.map((genre) => genre.name).join(", ") ||
+              "ไม่ระบุ",
+          ],
+          [
+            "Released",
+            firstGame.released ?? "ไม่ระบุ",
+            secondGame.released ?? "ไม่ระบุ",
+          ],
+          [
+            "RAWG Rating",
+            firstGame.rating.toFixed(1),
+            secondGame.rating.toFixed(1),
+          ],
+          [
+            "Metacritic",
+            String(firstGame.metacritic ?? "ไม่ระบุ"),
+            String(secondGame.metacritic ?? "ไม่ระบุ"),
+          ],
+          [
+            "Platforms",
+            firstGame.platforms?.map((item) => item.platform.name).join(", ") ||
+              "ไม่ระบุ",
+            secondGame.platforms
+              ?.map((item) => item.platform.name)
+              .join(", ") || "ไม่ระบุ",
+          ],
+        ]
+      : [];
 
   return (
     <>
@@ -77,9 +95,29 @@ export default function ComparePage() {
             aria-label={`เกมที่ ${index + 1}`}
             className="min-w-0 break-words p-3 sm:p-4"
           >
+            {/* array ต้องมีตัวแรกก่อนตัวที่สอง จึงให้เลือกซ้ายก่อนขวาเมื่อรายการยังว่าง */}
+            {index === 1 && compareIds.length === 0 ? (
+              <p className="mb-4 text-sm text-slate-500">
+                เลือกเกมจากฝั่งซ้ายก่อน
+              </p>
+            ) : (
+              <CompareGameSearch
+                label={index === 0 ? "ค้นหาเกมฝั่งซ้าย" : "ค้นหาเกมฝั่งขวา"}
+                selectedIds={compareIds}
+                onSelect={(newId) => {
+                  // ช่องว่างเพิ่ม ID ต่อท้าย; ช่องเดิมแทน ID ในตำแหน่งเดิมโดยไม่ย้ายอีกฝั่ง
+                  if (id === undefined) {
+                    addCompare(newId);
+                  } else {
+                    replaceCompare(id, newId);
+                  }
+                }}
+              />
+            )}
+            {/* แยกช่องว่างออกจาก Query ที่กำลังโหลด เพราะ query ที่ปิด enabled ยังมีสถานะ pending ได้ */}
             {id === undefined ? (
               <div className="grid min-h-48 place-items-center text-sm text-slate-500">
-                เลือกเกมที่ {index + 1} จากหน้า Discover
+                ยังไม่ได้เลือกเกมที่ {index + 1}
               </div>
             ) : (
               <>
@@ -98,7 +136,7 @@ export default function ComparePage() {
                       onClick={() => void query.refetch()}
                       disabled={query.isFetching}
                     >
-                      {query.isFetching ? 'กำลังลองใหม่...' : 'ลองใหม่'}
+                      {query.isFetching ? "กำลังลองใหม่..." : "ลองใหม่"}
                     </button>
                   </div>
                 ) : query.data === null ? (
@@ -119,9 +157,7 @@ export default function ComparePage() {
                       </div>
                     )}
 
-                    <h2 className="mt-3 font-semibold">
-                      {query.data.name}
-                    </h2>
+                    <h2 className="mt-3 font-semibold">{query.data.name}</h2>
                     <Link
                       className="mt-2 inline-block text-sm text-blue-600 hover:underline"
                       to={`/games/${id}`}
@@ -145,6 +181,7 @@ export default function ComparePage() {
         ))}
       </div>
 
+      {/* แสดงตารางเมื่อทั้งสองฝั่งมีข้อมูลเท่านั้น และใช้ colgroup กำหนดความกว้างเท่ากัน */}
       {firstGame && secondGame && (
         <div className="mt-5 overflow-hidden rounded-lg border border-slate-200 bg-white">
           <table className="w-full table-fixed border-collapse text-sm">
@@ -157,20 +194,36 @@ export default function ComparePage() {
             </colgroup>
             <thead className="bg-blue-50 text-blue-800">
               <tr>
-                <th scope="col" className="break-words border-r border-slate-200 p-3 text-center">{firstGame.name}</th>
-                <th scope="col" className="break-words p-3 text-center">{secondGame.name}</th>
+                <th
+                  scope="col"
+                  className="break-words border-r border-slate-200 p-3 text-center"
+                >
+                  {firstGame.name}
+                </th>
+                <th scope="col" className="break-words p-3 text-center">
+                  {secondGame.name}
+                </th>
               </tr>
             </thead>
+            {/* แต่ละหัวข้อมี tbody ของตนเอง หัวข้อกินสองคอลัมน์ ส่วนค่าซ้าย/ขวาอยู่คนละช่อง */}
             {comparisonRows.map(([field, first, second]) => (
               <tbody key={field}>
                 <tr>
-                  <th scope="rowgroup" colSpan={2} className="border-y border-slate-200 bg-slate-50 px-3 py-2 text-center text-xs font-semibold text-slate-600">
+                  <th
+                    scope="rowgroup"
+                    colSpan={2}
+                    className="border-y border-slate-200 bg-slate-50 px-3 py-2 text-center text-xs font-semibold text-slate-600"
+                  >
                     {field}
                   </th>
                 </tr>
                 <tr>
-                  <td className="break-words border-r border-slate-200 p-4 text-center align-top">{first}</td>
-                  <td className="break-words p-4 text-center align-top">{second}</td>
+                  <td className="break-words border-r border-slate-200 p-4 text-center align-top">
+                    {first}
+                  </td>
+                  <td className="break-words p-4 text-center align-top">
+                    {second}
+                  </td>
                 </tr>
               </tbody>
             ))}
@@ -178,5 +231,5 @@ export default function ComparePage() {
         </div>
       )}
     </>
-  )
+  );
 }

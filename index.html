@@ -1,13 +1,25 @@
 <!doctype html>
 <html lang="th" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Game-Nai-Dee โปรเจกต์ค้นหาเกมสำหรับ CS319 Mini Project 2" />
-    <title>Game-Nai-Dee | เกมไหนดี</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- ให้ความกว้างหน้าอิงขนาดอุปกรณ์ เพื่อให้ responsive CSS ทำงานบนมือถือ -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Game-Nai-Dee โปรเจกต์ค้นหาเกมสำหรับ CS319 Mini Project 2" />
+  <title>Game-Nai-Dee | เกมไหนดี</title>
+
+  <!-- เตรียมการเชื่อมต่อ Google Fonts และโหลด Noto Sans Thai; display=swap ใช้ฟอนต์สำรองระหว่างรอ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <!-- จุดที่ React วาดแอป โดย main.tsx หา element นี้ด้วย ID -->
+  <div id="root"></div>
+  <!-- Vite ใช้ main.tsx เป็นจุดเริ่มต้นของโค้ดแอป และแปลงให้เบราว์เซอร์ใช้ได้ -->
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

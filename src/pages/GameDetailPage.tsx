@@ -5,8 +5,10 @@ import { useFavoritesStore } from "../stores/useFavoriteStore";
 import { useCompareStore } from "../stores/useCompareStore";
 
 export default function GameDetailPage() {
+  // useParams ให้ข้อความจาก URL เช่น /games/3498 ไม่ได้ให้ number โดยอัตโนมัติ
   const { id } = useParams<"id">();
 
+  // ตรวจรูปแบบก่อน Number เพื่อไม่รับทศนิยม เลขติดลบ หรือจำนวนที่เกิน safe integer
   const isValidId =
     id !== undefined &&
     /^[1-9]\d*$/.test(id) &&
@@ -14,6 +16,7 @@ export default function GameDetailPage() {
 
   const gameId = isValidId ? Number(id) : undefined;
 
+  // คำนวณสถานะปุ่มจาก ID ใน store ไม่ทำสำเนารายการโปรดไว้ใน useState
   const isFavorite = useFavoritesStore(
     (state) => gameId !== undefined && state.favoriteIds.includes(gameId!),
   );
@@ -27,8 +30,10 @@ export default function GameDetailPage() {
 
   const isInCompare = gameId !== undefined && compareIds.includes(gameId);
 
+  // ครบสองเกมให้ปิดเฉพาะการเพิ่ม ส่วนเกมที่เลือกไว้แล้วยังนำออกได้
   const isCompareFull = compareIds.length >= 2;
 
+  // เรียก Hook ทุก render ที่ตำแหน่งเดิม แล้วให้ enabled ใน Hook คุมว่าจะขอ API หรือไม่
   const {
     data: game,
     isPending,
@@ -49,6 +54,7 @@ export default function GameDetailPage() {
 
       <PageHeader title="Game Details" path={`/games/${id ?? ""}`} step="02" />
 
+      {/* แยก ID ผิด, โหลด, error/retry และ null ที่หมายถึง API 404 ก่อนอ่านข้อมูลเกม */}
       {!isValidId ? (
         <p role="alert" className="rounded-lg bg-red-50 p-5 text-red-700">
           รหัสเกมไม่ถูกต้อง ต้องเป็นจำนวนเต็มบวก
@@ -98,6 +104,7 @@ export default function GameDetailPage() {
                 "ไม่ระบุประเภท"}
             </p>
 
+            {/* ?? แสดงข้อความเฉพาะ null/undefined จึงไม่ทำให้คะแนน 0 หายไป */}
             <p className="text-sm text-slate-700">
               ★ RAWG Rating: {game.rating.toFixed(1)}
               {" · "}
@@ -129,6 +136,7 @@ export default function GameDetailPage() {
               </p>
             </div>
 
+            {/* ปุ่มส่งเฉพาะ game.id ให้ store; aria-pressed บอกสถานะเลือกสำหรับเทคโนโลยีช่วยอ่าน */}
             <div className="flex flex-wrap gap-2 pt-1">
               <button
                 type="button"

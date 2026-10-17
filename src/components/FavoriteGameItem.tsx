@@ -2,11 +2,13 @@ import { Link } from 'react-router'
 import { useFavoritesStore } from '../stores/useFavoriteStore'
 import { useGameDetail } from '../hooks/useGameDetail'
 
+// รับเฉพาะ ID จากหน้า Collection เพื่อโหลดรายละเอียดผ่าน Hook ที่ใช้ร่วมกับหน้าอื่น
 interface FavoriteGameItemProps {
     id: number
 }
 
 export default function FavoriteGameItem({ id }: FavoriteGameItemProps) {
+    // หนึ่งรายการเป็นหนึ่ง component จึงเรียก Hook ระดับบนสุดได้ ไม่เรียก Hook ใน loop ของ parent
     const { data: game, isPending, isError, error, refetch, isFetching } = useGameDetail(id)
 
     const removeFavorite = useFavoritesStore((state) => state.removeFavorite)
@@ -14,6 +16,7 @@ export default function FavoriteGameItem({ id }: FavoriteGameItemProps) {
       return (
     <article className="flex flex-wrap items-center gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className="min-w-0 flex-1">
+        {/* แยกโหลด ล้มเหลว ไม่พบเกม และสำเร็จ เพื่อให้แต่ละรายการจัดการปัญหาของตนเอง */}
         {isPending ? (
           <p role="status" className="text-sm text-slate-500">
             กำลังโหลดเกม #{id}...
@@ -65,6 +68,7 @@ export default function FavoriteGameItem({ id }: FavoriteGameItemProps) {
         )}
       </div>
 
+      {/* วางปุ่มนำออกนอกเงื่อนไขโหลดข้อมูล เพื่อให้ลบ ID ได้แม้ API โหลดเกมนั้นไม่สำเร็จ */}
       <button
         type="button"
         className="btn btn-outline btn-sm border-blue-500 text-blue-600"

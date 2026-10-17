@@ -4,24 +4,47 @@ import PageHeader from "../components/PageHeader";
 import { useGame } from "../hooks/useGame";
 import { useCompareStore } from "../stores/useCompareStore";
 
+// label ใช้แสดงบนหน้า ส่วน value เป็น slug ส่งให้ RAWG; ค่าว่างหมายถึงไม่กรองแนวเกม
 const genres = [
   { label: "All Games", value: "" },
   { label: "Action", value: "action" },
-  { label: "RPG", value: "role-playing-games-rpg" },
   { label: "Adventure", value: "adventure" },
+  { label: "Arcade", value: "arcade" },
+  { label: "Board Games", value: "board-games" },
+  { label: "Card", value: "card" },
+  { label: "Casual", value: "casual" },
+  { label: "Educational", value: "educational" },
+  { label: "Family", value: "family" },
+  { label: "Fighting", value: "fighting" },
+  { label: "Indie", value: "indie" },
+  { label: "Massively Multiplayer", value: "massively-multiplayer" },
+  { label: "Platformer", value: "platformer" },
+  { label: "Puzzle", value: "puzzle" },
+  { label: "Racing", value: "racing" },
+  { label: "RPG", value: "role-playing-games-rpg" },
+  { label: "Shooter", value: "shooter" },
+  { label: "Simulation", value: "simulation" },
+  { label: "Sports", value: "sports" },
+  { label: "Strategy", value: "strategy" },
 ];
 
 export default function HomePage() {
+  // selector อ่านเฉพาะ state/action ที่ต้องใช้จาก store กลาง รายการเกมเต็มไม่ได้เก็บที่นี่
   const compareIds = useCompareStore((state) => state.compareIds);
   const addCompare = useCompareStore((state) => state.addCompare);
   const removeCompare = useCompareStore((state) => state.removeCompare);
   const clearCompare = useCompareStore((state) => state.clearCompare);
+  // แยกข้อความที่กำลังพิมพ์จากคำค้นที่ submit เพื่อไม่เรียก API ทุกตัวอักษร
+  // state ของหน้านี้เริ่มใหม่เมื่อออกจากหน้าแล้วกลับมา ส่วน Query cache อาจยังอยู่
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
 
-  const { data, isPending, isError, error, refetch, isFetching } =
-    useGame(search, selectedGenre);
+  // useGame ใช้คำค้นและแนวเกมเป็น key เพื่อแยกแคช; ระหว่างยังไม่มี data ใช้ array ว่าง
+  const { data, isPending, isError, error, refetch, isFetching } = useGame(
+    search,
+    selectedGenre,
+  );
   const games = data?.results ?? [];
 
   return (
@@ -33,6 +56,7 @@ export default function HomePage() {
           role="search"
           className="flex flex-col gap-2 sm:flex-row"
           onSubmit={(event) => {
+            // หยุด form ไม่ให้ reload หน้า แล้วส่งคำค้นใหม่ผ่าน state ให้ Query ทำงาน
             event.preventDefault();
             setSearch(searchInput.trim());
           }}
@@ -57,31 +81,43 @@ export default function HomePage() {
             Search
           </button>
         </form>
-        <div className="flex flex-wrap gap-2" aria-label="ตัวกรองประเภทเกม">
-          {genres.map((genre) => (
-            <button
-              key={genre.value}
-              type="button"
-              className={
-                selectedGenre === genre.value
-                  ? "rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"
-                  : "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-200"
-              }
-              onClick={() => setSelectedGenre(genre.value)}
-            >
-              {genre.label}
-            </button>
-          ))}
+        <div className="w-full sm:max-w-xs">
+          <label
+            htmlFor="genre-filter"
+            className="mb-2 block text-sm font-medium text-slate-700"
+          >
+            แนวเกม
+          </label>
+
+          {/* controlled select: value มาจาก state และ onChange เปลี่ยนทั้งตัวเลือกกับผลค้นหา */}
+          <select
+            id="genre-filter"
+            name="genre"
+            className="select h-11 w-full border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500"
+            value={selectedGenre}
+            onChange={(event) => setSelectedGenre(event.target.value)}
+          >
+            {genres.map((genre) => (
+              <option key={genre.value} value={genre.value}>
+                {genre.label}
+              </option>
+            ))}
+          </select>
         </div>
       </section>
 
+      {/* แถบเลือกติดขอบบนขณะเลื่อน เพื่อให้ไป Compare หรือล้างรายการได้สะดวก */}
       <div className="sticky top-0 z-10 mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-blue-200 bg-white p-3 shadow-sm">
         <p role="status" className="mr-auto text-sm text-blue-700">
           เลือกเปรียบเทียบ {compareIds.length}/2 เกม
         </p>
         {compareIds.length > 0 && (
           <>
-            <button type="button" className="btn btn-ghost btn-sm" onClick={clearCompare}>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={clearCompare}
+            >
               ล้างที่เลือก
             </button>
             <Link className="btn btn-primary btn-sm" to="/compare">
@@ -91,6 +127,7 @@ export default function HomePage() {
         )}
       </div>
 
+      {/* เรียงสถานะโหลด → ผิดพลาด/ลองใหม่ → ไม่พบข้อมูล → รายการเกม */}
       {isPending ? (
         <p role="status" className="py-10 text-center text-slate-500">
           กำลังโหลดรายการเกม...
@@ -155,16 +192,22 @@ export default function HomePage() {
                   </Link>
                 </div>
               </div>
+              {/* ครบสองเกมแล้วปิดการเพิ่มเกมอื่น แต่ยังเปิดปุ่มเกมเดิมไว้ให้นำออกได้ */}
               <div className="px-4 pb-4">
                 <button
                   type="button"
                   aria-pressed={compareIds.includes(game.id)}
                   aria-label={`${compareIds.includes(game.id) ? "นำออกจากการเปรียบเทียบ" : "เลือกเปรียบเทียบ"} ${game.name}`}
-                  disabled={compareIds.length >= 2 && !compareIds.includes(game.id)}
-                  className={compareIds.includes(game.id)
-                    ? "btn btn-primary btn-sm w-full"
-                    : "btn btn-outline btn-sm w-full border-blue-500 text-blue-600"}
+                  disabled={
+                    compareIds.length >= 2 && !compareIds.includes(game.id)
+                  }
+                  className={
+                    compareIds.includes(game.id)
+                      ? "btn btn-primary btn-sm w-full"
+                      : "btn btn-outline btn-sm w-full border-blue-500 text-blue-600"
+                  }
                   onClick={() => {
+                    // ปุ่มเดียวสลับเพิ่ม/ลบโดยดู state ปัจจุบัน; store ตรวจจำนวนและการซ้ำอีกชั้น
                     if (compareIds.includes(game.id)) {
                       removeCompare(game.id);
                     } else {

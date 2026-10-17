@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router'
 
+// รวมข้อมูลเมนูไว้ที่เดียว แล้ว map สร้างลิงก์ ลดการเขียน JSX ซ้ำ
 const navigation = [
   { to: '/', label: 'Discover' },
   { to: '/favorites', label: 'Collection' },
@@ -7,9 +8,11 @@ const navigation = [
   { to: '/about', label: 'About' },
 ]
 
+// Layout ของเว็บ: เมนูและ footer คงอยู่ ส่วนหน้าลูกเปลี่ยนผ่าน Outlet
 function App() {
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-950">
+      {/* ลิงก์นี้ให้ผู้ใช้คีย์บอร์ดข้ามเมนูไปเนื้อหาหลักได้ */}
       <a className="skip-link" href="#main-content">ข้ามไปเนื้อหา</a>
 
       <header className="border-b border-slate-200 bg-white">
@@ -20,6 +23,7 @@ function App() {
           </NavLink>
 
           <nav aria-label="เมนูหลัก" className="flex flex-wrap items-center gap-1 sm:gap-4">
+            {/* NavLink ส่ง isActive เพื่อเน้นเมนูปัจจุบัน; end ให้จับเส้นทางตรงกับเมนู */}
             {navigation.map(({ to, label }) => (
               <NavLink
                 key={to}
@@ -38,13 +42,14 @@ function App() {
       </header>
 
       <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-6xl flex-1 px-4 py-7 sm:px-6 sm:py-10">
+        {/* Router เลือก page ที่ตรง URL มาแสดงตรงนี้ โดยไม่โหลดเอกสารใหม่ทั้งหน้า */}
         <Outlet />
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-2 px-4 py-4 text-xs text-slate-500 sm:px-6">
           <p>Game-Nai-Dee · CS319 Mini Project 2</p>
-          <a href="https://rawg,io/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Powered by RAWG API</a>
+          <a href="https://rawg.io/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Powered by RAWG API</a>
         </div>
       </footer>
     </div>

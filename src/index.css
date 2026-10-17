@@ -1,18 +1,21 @@
+/* โหลด utilities ของ Tailwind; DaisyUI เพิ่ม component classes และใช้ธีม light */
 @import "tailwindcss";
 @plugin "daisyui" {
   themes: light --default;
 }
 
+/* กำหนดพื้นหลังและแจ้ง browser ให้ใช้รูปแบบ controls โทนสว่าง */
 html {
   background: #f8fafc;
   color-scheme: light;
 }
 
+/* สไตล์พื้นฐานของเว็บ ฟอนต์หลักโหลดจาก index.html และมี fallback ถ้าโหลดไม่ได้ */
 body {
   margin: 0;
   min-width: 320px;
   background: #f8fafc;
-  font-family: Inter, "Segoe UI", "Leelawadee UI", Tahoma, sans-serif;
+  font-family: "Noto Sans Thai", "Segoe UI", Tahoma, sans-serif;
   color: #0f172a;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -25,6 +28,7 @@ button:focus-visible {
   outline-offset: 4px;
 }
 
+/* ซ่อนลิงก์ข้ามเมนูไว้นอกจอ แล้วแสดงเมื่อผู้ใช้โฟกัสด้วยคีย์บอร์ด */
 .skip-link {
   position: absolute;
   top: 0.5rem;
