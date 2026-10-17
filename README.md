@@ -1,83 +1,156 @@
 # Game-Nai-Dee (เกมไหนดี)
 
-โปรเจกต์ CS319 Mini Project 2: เว็บค้นหาเกม ดูรายละเอียด เก็บรายการโปรด และเปรียบเทียบเกม
+เว็บแอปพลิเคชันค้นหาเกม ดูรายละเอียด บันทึกเกมโปรด และเปรียบเทียบเกม พัฒนาสำหรับ **CS319 Mini Project 2** โดยใช้ข้อมูลจาก **RAWG Video Games Database**
 
-**สถานะ: ขั้นที่ 2 — Routing และโครงหน้า 5 หน้า ยังไม่พร้อมส่งงาน**
+## ความสามารถของโปรแกรม
 
-## เริ่มใช้งานบน Windows
+### Discover — ค้นหาเกม
 
-ใช้ Node.js 24 LTS (เครื่องที่เตรียมงานใช้ 24.14.0) และ npm เปิด Terminal ในโฟลเดอร์โปรเจกต์:
+- แสดงรายการเกมจาก RAWG ครั้งละสูงสุด 20 เกม พร้อมรูปปก ชื่อ แนวเกม และคะแนน
+- ค้นหาชื่อเกมด้วยการพิมพ์แล้วกด Search หรือ Enter
+- กรองแนวเกมด้วยปุ่ม All Games, Action, RPG และ Adventure โดยใช้ร่วมกับคำค้นได้
+- เปิดหน้ารายละเอียด หรือเลือกเกมสำหรับเปรียบเทียบจากการ์ดได้โดยตรง
+- แสดงจำนวนเกมที่เลือกเปรียบเทียบ พร้อมปุ่มล้างรายการและลิงก์ไปหน้า Compare
 
-```powershell
-cd C:\Users\Hp\Pictures\CS319\mini_project2\game-nai-dee
-npm.cmd ci
-npm.cmd run dev
-```
+### Game Details — รายละเอียดเกม
 
-เปิด URL ที่ Terminal แสดง (ปกติ http://localhost:5173) หยุดด้วย Ctrl+C
-ถ้ามี node_modules จากการติดตั้งเรียบร้อยแล้ว เริ่มที่ npm.cmd run dev ได้เลย
-ใช้ npm.cmd บน PowerShell เพื่อหลีกเลี่ยงปัญหานโยบายการรัน npm.ps1 โดยไม่ต้องลดความปลอดภัยของเครื่อง
+- โหลดข้อมูลตาม ID เกมใน URL
+- แสดงรูปปก คำอธิบาย แนวเกม วันวางจำหน่าย แพลตฟอร์ม คะแนน RAWG และคะแนน Metacritic เมื่อมีข้อมูล
+- เพิ่มหรือนำเกมออกจากรายการโปรดและรายการเปรียบเทียบ
+- แยกกรณี ID ไม่ถูกต้อง ไม่พบเกม และการโหลดข้อมูลผิดพลาด
 
-```powershell
-npm.cmd run lint
-npm.cmd run typecheck
-npm.cmd run build
-npm.cmd run preview
-```
+### Collection — เกมโปรด
 
-preview ใช้ดูไฟล์ build หลัง build สำเร็จ ไม่ใช่เซิร์ฟเวอร์ production
+- แสดงเกมที่บันทึกไว้ พร้อมลิงก์ดูรายละเอียดและปุ่มนำออก
+- เก็บรายการ ID ใน localStorage จึงยังอยู่หลังรีเฟรชบนเบราว์เซอร์และที่อยู่เว็บเดิม
+- แสดงข้อความแนะนำเมื่อยังไม่มีเกมโปรด
 
-## มีอะไรแล้ว
+### Compare — เปรียบเทียบเกม
 
-- React 19 + Vite + TypeScript strict และ ESLint สำหรับ React/TypeScript พร้อมกฎห้าม explicit any
-- Tailwind CSS v4 + DaisyUI v5 พร้อม layout และเมนูร่วมกัน
-- ธีมหน้าจอพื้นขาว สีฟ้า การ์ดขอบบาง และ layout แบบ dashboard ตามภาพอ้างอิงของผู้ใช้
-- React Router v7 ทำงานแล้ว: /, /games/:id, /favorites, /compare, /about พร้อมหน้า 404 และตรวจรูปแบบ ID
-- TanStack Query v5 และ Zustand v5 ติดตั้งไว้ แต่ยังไม่มี Query provider หรือ persist store
-- .env.example เตรียมชื่อ VITE_RAWG_API_KEY แต่ยังไม่มีการเรียก API
-- AGENTS.md และ docs/ แยกบท พร้อมคำอธิบายภาษาไทย; แบบฝึกหัด/คำถามทั้งหมดเก็บไว้ทำท้ายโปรเจกต์ในบท 7
+- เลือกเกมไม่ซ้ำกันได้สูงสุด 2 เกม พร้อมนำออกหรือล้างทั้งหมด
+- เปรียบเทียบแนวเกม วันวางจำหน่าย คะแนน RAWG, Metacritic และแพลตฟอร์ม
+- แบ่งรูปและข้อมูลซ้าย–ขวาเท่ากัน โดยชื่อหัวข้ออยู่เต็มแถวเพื่อให้อ่านเทียบกันง่าย
+- บันทึก ID ที่เลือกลง localStorage และโหลดรายละเอียดแต่ละเกมแยกกัน
 
-## เริ่มเรียนตรงนี้
+### About — เกี่ยวกับโปรเจกต์
 
-1. [สารบัญและแผนงาน](docs/README.md)
-2. [บทปัจจุบัน: Routing และโครงหน้า](docs/02-routing/README.md)
-   ([บันทึกขั้นแรก](docs/01-project-setup/README.md))
-3. [ข้อกำหนดจาก PDF](docs/00-requirements/README.md)
-4. [กติกาสำหรับ Codex](AGENTS.md)
+- แสดงข้อมูลสมาชิก เทคโนโลยีที่ใช้ และเครดิตแหล่งข้อมูล RAWG
+- **ข้อมูลสมาชิก 2 คนยังเป็นข้อมูลตัวอย่าง และยังไม่ได้ใส่รูปจริง**
 
-## โครงสร้าง
+หน้าที่เรียก API มีสถานะกำลังโหลด ข้อผิดพลาด และปุ่มลองใหม่ พร้อมข้อความรองรับข้อมูลว่างหรือข้อมูลที่ขาด เว็บไซต์ใช้ธีมขาว–น้ำเงินและจัดหน้าสำหรับจอขนาดต่าง ๆ
+
+## เทคโนโลยีที่ใช้
+
+| เทคโนโลยี | หน้าที่ |
+|---|---|
+| React 19 | สร้างหน้าจอและ components |
+| Vite 8 | เปิดเซิร์ฟเวอร์ระหว่างพัฒนาและ build เว็บ |
+| TypeScript 6 | กำหนดชนิดข้อมูลและตรวจโค้ด โดยเปิด strict mode |
+| React Router 7 | จัดการเส้นทางด้วย createBrowserRouter, Outlet, NavLink และ useParams |
+| TanStack Query 5 | โหลดข้อมูล API จัดการแคชและสถานะคำขอ |
+| Zustand 5 + Persist | จัดการ ID ของเกมโปรดและเกมเปรียบเทียบ พร้อมบันทึกลง localStorage |
+| Tailwind CSS 4 + DaisyUI 5 | จัดรูปแบบหน้าจอและองค์ประกอบ UI |
+| ESLint | ตรวจคุณภาพโค้ด TypeScript และกฎ React Hooks |
+| RAWG API + Fetch API | ขอรายการและรายละเอียดเกม |
+
+เวอร์ชันที่ติดตั้งแน่นอนอ้างอิงจาก [package-lock.json](package-lock.json)
+
+## การทำงานของข้อมูล
 
 ```text
-src/
-  main.tsx       จุดเริ่มต้น React
-  App.tsx        Root Layout: เมนู, Outlet, footer
-  router.tsx     ตารางจับคู่ URL กับหน้า
-  index.css      Tailwind, DaisyUI และ CSS กลาง
-  components/    PageHeader ที่รับข้อความผ่าน props
-  pages/         โครง 5 หน้า + NotFoundPage + RouteErrorPage
-  api/           ฟังก์ชันเรียก RAWG (เตรียมโฟลเดอร์)
-  hooks/         query hooks (เตรียมโฟลเดอร์)
-  stores/        Zustand client state (เตรียมโฟลเดอร์)
-  types/         TypeScript types (เตรียมโฟลเดอร์)
-docs/            README แยกตามขั้น
+ค้นหา / เลือกแนวเกม / เปิดรายละเอียด
+    → Query Hook → ฟังก์ชัน API → RAWG
+    → ตรวจรูปแบบข้อมูล → แคชของ TanStack Query → แสดงผล
+
+เพิ่มเกมโปรด / เลือกเปรียบเทียบ
+    → Zustand → บันทึกเฉพาะ ID ลง localStorage
+    → ใช้ ID โหลดรายละเอียดผ่าน TanStack Query
 ```
 
-## ขอบเขตและข้อควรทราบ
+- ข้อมูลเกมจาก API อยู่ใน TanStack Query ส่วน Zustand เก็บเฉพาะ ID ที่ผู้ใช้เลือก
+- แคชรายการแยกตามคำค้นและแนวเกม ส่วนรายละเอียดแยกตาม ID
+- ตั้ง `staleTime` ไว้ 5 นาที และลองใหม่อัตโนมัติอีก 1 ครั้งเมื่อคำขอล้มเหลว
+- `staleTime` เป็นช่วงที่ข้อมูลถือว่ายังสด ไม่ใช่ตัวตั้งเวลาให้โหลดทุก 5 นาที
+- แคช API อยู่ในหน่วยความจำ เมื่อรีเฟรชอาจต้องโหลดรายละเอียดใหม่ แม้ ID ที่บันทึกไว้ยังอยู่
 
-ข้อดี: แยก layout/เส้นทาง/เนื้อหาชัดเจน ข้อเสีย: มีหลายไฟล์ที่ต้องติดตาม
-ข้อจำกัด: โครงหน้าไม่ได้หมายความว่าฟีเจอร์เสร็จ ยังไม่มีข้อมูลเกมจริงหรือการบันทึก
-ความเสี่ยงของ routing: ตอน deploy ต้องตั้ง SPA fallback ให้เปิด URL ตรงและ refresh ได้
-ความเสี่ยง: RAWG ต้องใช้ key และมีเงื่อนไขการใช้งาน/โควตา ให้ตรวจจากเว็บทางการก่อนเชื่อมจริง
-ข้อจำกัด: .env.local ช่วยไม่ให้ key ติด Git แต่ VITE_ ไม่ซ่อน key จากผู้ใช้เว็บ ขั้น Routing ยังไม่ต้องกรอก key
+## เส้นทางในเว็บไซต์
 
-## เอกสารทางการ
+| หน้า | URL |
+|---|---|
+| Discover | `/` |
+| Game Details | `/games/:id` |
+| Collection | `/favorites` |
+| Compare | `/compare` |
+| About | `/about` |
 
-- [Vite](https://vite.dev/guide/)
-- [React Router v7 Data Mode](https://reactrouter.com/7.18.4/start/data/installation)
-- [Tailwind บน Vite](https://tailwindcss.com/docs/installation/using-vite)
-- [DaisyUI บน Vite](https://daisyui.com/docs/install/vite/)
-- [TanStack Query](https://tanstack.com/query/latest/docs/framework/react/overview) — เลือกเอกสาร v5
-- [Zustand](https://github.com/pmndrs/zustand)
-- [RAWG API / attribution](https://rawg.io/apidocs)
+เส้นทางที่ไม่ตรงกับรายการจะแสดงหน้า 404 และมีหน้ารองรับข้อผิดพลาดของ Router
 
-ตรวจการติดตั้งจริงใน package-lock.json; เก็บ lockfile ใน Git เพื่อให้สมาชิกติดตั้งชุดเดียวกันด้วย npm ci
+## การติดตั้งและเปิดใช้งาน
+
+สภาพแวดล้อมที่ใช้พัฒนา: **Node.js 24.14.0 และ npm 11.9.0** ต้องมีอินเทอร์เน็ตและ RAWG API key เพื่อโหลดข้อมูลเกม
+
+1. ดาวน์โหลดหรือ clone repository แล้วเปิด Terminal ในโฟลเดอร์ `game-nai-dee`
+2. ติดตั้ง dependencies ตาม lockfile:
+
+   ```bash
+   npm ci
+   ```
+
+3. ขอ API key จาก [RAWG API](https://rawg.io/apidocs) แล้วสร้างไฟล์ `.env.local` ระดับเดียวกับ `package.json`:
+
+   ```dotenv
+   VITE_RAWG_API_KEY=YOUR_RAWG_API_KEY
+   ```
+
+   แทน `YOUR_RAWG_API_KEY` ด้วย key ของตนเอง และไม่ commit ไฟล์นี้ ค่า `VITE_` ถูกส่งไปยังเบราว์เซอร์ได้ จึงไม่ใช่ความลับฝั่งเซิร์ฟเวอร์
+
+4. เปิดเว็บระหว่างพัฒนา:
+
+   ```bash
+   npm run dev
+   ```
+
+   เปิด URL ที่ Terminal แสดง โดยปกติคือ `http://localhost:5173` หากแก้ `.env.local` ให้หยุดเซิร์ฟเวอร์ด้วย Ctrl+C แล้วเริ่มใหม่
+
+บน Windows PowerShell หาก `npm` ถูกบล็อกด้วยนโยบายรันสคริปต์ ให้ใช้ `npm.cmd` แทน เช่น `npm.cmd run dev`
+
+## คำสั่งที่ใช้
+
+| คำสั่ง | หน้าที่ |
+|---|---|
+| `npm run dev` | เปิดเว็บระหว่างพัฒนา |
+| `npm run lint` | ตรวจโค้ดด้วย ESLint |
+| `npm run typecheck` | ตรวจ TypeScript |
+| `npm run build` | ตรวจ TypeScript และสร้างไฟล์เว็บใน `dist/` |
+| `npm run preview` | เปิดดูผล build ในเครื่อง ต้อง build ก่อน |
+
+## โครงสร้างโปรเจกต์
+
+```text
+public/              ไฟล์ static เช่น favicon และรูปสมาชิกเมื่อเพิ่มภายหลัง
+src/
+  api/               ฟังก์ชันเรียก RAWG และตรวจรูปแบบข้อมูล
+  assets/            รูปและไฟล์ที่นำเข้าจากโค้ด
+  components/        ส่วนแสดงผลที่ใช้ร่วมกัน
+  hooks/             Hooks สำหรับ TanStack Query
+  pages/             หน้าหลักและหน้ารองรับข้อผิดพลาด
+  stores/            Zustand stores สำหรับ Favorites และ Compare
+  types/             ชนิดข้อมูลเกมและ API response
+  App.tsx            Layout เมนู และ footer
+  main.tsx           จุดเริ่มต้นและ QueryClientProvider
+  router.tsx         กำหนดเส้นทาง
+  index.css          Styles กลาง
+```
+
+## ขอบเขตปัจจุบัน
+
+- ยังไม่มีระบบบัญชีผู้ใช้หรือการซิงก์รายการข้ามอุปกรณ์ การล้างข้อมูลเว็บไซต์อาจทำให้รายการที่บันทึกไว้หาย
+- แสดงผลการค้นหาหน้าแรกสูงสุด 20 เกม ยังไม่มีปุ่มเปลี่ยนหน้าหรือโหลดเพิ่ม
+- ตัวกรองยังเป็นปุ่ม 3 แนวเกมและ All Games ยังไม่ได้เปลี่ยนเป็น dropdown ครบทุกแนว
+- ข้อมูลและรูปสมาชิกใน About ต้องเปลี่ยนเป็นข้อมูลจริงก่อนส่งงาน
+- รูป คะแนน และรายละเอียดขึ้นอยู่กับข้อมูลและความพร้อมของ RAWG; คะแนน RAWG กับ Metacritic ใช้คนละมาตรวัด
+- หากนำขึ้น hosting ต้องตั้ง SPA fallback เพื่อให้เปิด URL เช่น `/games/3328` โดยตรงได้
+
+## แหล่งข้อมูลและเครดิต
+
+ข้อมูลเกม รูปภาพ และคะแนนมาจาก [RAWG Video Games Database](https://rawg.io/) ดูรายละเอียดการใช้งาน API และเงื่อนไขได้ที่ [RAWG API documentation](https://rawg.io/apidocs)
