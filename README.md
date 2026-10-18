@@ -179,7 +179,7 @@ URL หลัก: `/`, `/games/:id`, `/favorites`, `/compare`, `/about`
 
 ## ภาพหน้าจอและการเตรียมส่ง
 
-มีภาพระบบจริง 9 ภาพ ครอบคลุมทั้ง 5 หน้าในโฟลเดอร์ [screenshots/](screenshots/) และข้อมูลตัวอย่าง 20 เกมจาก RAWG ใน [data/games.sample.json](data/games.sample.json) โดยไฟล์ตัวอย่างไม่มี API key และกำหนด next/previous เป็น null เว็บยังเรียกข้อมูลจาก RAWG API ตามเดิม
+มีภาพระบบ 9 ภาพ ครอบคลุมทั้ง 5 หน้าในโฟลเดอร์ [screenshots/](screenshots/) และข้อมูลตัวอย่าง 20 เกมจาก RAWG ใน [data/games.sample.json](data/games.sample.json) โดยไฟล์ตัวอย่างไม่มี API key และกำหนด next/previous เป็น null เว็บยังเรียกข้อมูลจาก RAWG API ตามเดิม
 
 จัดส่งเป็นไฟล์ `mini_proj2_รหัสนักศึกษา.zip` โดยไม่รวม `node_modules/`, `dist/` และ API key จริง
 
