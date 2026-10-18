@@ -7,10 +7,10 @@ export interface Genre {
 // ข้อมูลสรุปสำหรับการ์ดรายการ; รูปอาจเป็น null และ genres เป็นรายการแนวเกม
 export interface Game {
   id: number
-    name: string
-    background_image: string | null
-    rating: number
-    genres: Genre[]
+  name: string
+  background_image: string | null
+  rating: number
+  genres: Genre[]
 }
 
 // count คือจำนวนผลทั้งหมด ส่วน results คือข้อมูลเฉพาะหน้าที่ขอ ไม่จำเป็นต้องมีครบ 20

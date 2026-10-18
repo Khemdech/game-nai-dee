@@ -6,29 +6,49 @@ interface TeamMember {
   fullName: string;
   nickname: string;
   studentId: string;
-  responsibility: string;
+  responsibility: string[];
   photo: string;
 }
 
-// ข้อมูลตัวอย่างยังรอข้อมูลจริง; photo ว่างจะแสดงอักษรแรกของชื่อเล่นแทนรูป
+// ข้อมูลสมาชิกและหน้าที่รายบุคคล; photo ว่างจะแสดงอักษรแรกของชื่อเล่นแทนรูป
 const members: TeamMember[] = [
   {
-    name: "John Doe",
-    fullName: "Johnathan Doe",
-    nickname: "John",
-    studentId: "123456789",
-    responsibility: "Frontend Development, UI/UX Design",
-    photo: "",
+    name: "เขมเดช เหนียวแน่น",
+    fullName: "เขมเดช เหนียวแน่น",
+    nickname: "ต้น",
+    studentId: "1660702844",
+    responsibility: [
+      "ตั้งค่าโปรเจกต์ React 19, Vite และ TypeScript",
+      "จัดการเส้นทางเว็บไซต์ด้วย React Router v7",
+      "เชื่อมต่อ RAWG API ด้วย TanStack Query",
+      "พัฒนาหน้า Discover Games สำหรับค้นหาและแสดงรายการเกม",
+      "พัฒนาหน้า Game Details สำหรับแสดงรายละเอียดเกม",
+    ],
+    photo: "/member/mem1.jpg",
   },
   {
-    name: "Jane Smith",
-    fullName: "Jane Alexandra Smith",
-    nickname: "Jane",
-    studentId: "987654321",
-    responsibility: "Backend Development, API Integration",
-    photo: "",
+    name: "วชิรวิทย์ ตันติพูลผล",
+    fullName: "วชิรวิทย์ ตันติพูลผล",
+    nickname: "เติ้ล",
+    studentId: "1660704980",
+    responsibility: [
+      "จัดการข้อมูลเกมโปรดด้วย Zustand และ LocalStorage",
+      "พัฒนาหน้า My Collection สำหรับจัดเก็บเกมโปรด",
+      "พัฒนาหน้า Compare Games สำหรับเปรียบเทียบเกม 2 เกม",
+      "พัฒนาหน้า About สำหรับแสดงข้อมูลสมาชิกและแหล่งข้อมูล API",
+      "ออกแบบและปรับแต่ง UI ด้วย Tailwind CSS และ DaisyUI",
+    ],
+    photo: "/member/mem2.jpg",
   },
 ];
+
+// หน้าที่ทำด้วยกัน
+const sharedResponsibilities: string[] = [
+  "วางแผนและออกแบบ UI/UX",
+  "กำหนดโครงสร้างข้อมูลด้วย TypeScript",
+  "ทดสอบระบบและแก้ไขข้อผิดพลาด",
+  "จัดเตรียมไฟล์และเอกสารสำหรับส่งโครงงาน",
+]
 
 // หน้าแสดงข้อมูลทีมและเครดิต API จากข้อมูลในไฟล์นี้ ไม่ได้เรียก RAWG
 export default function AboutPage() {
@@ -65,15 +85,9 @@ export default function AboutPage() {
                   className="mx-auto size-24 rounded-full object-cover"
                 />
               ) : (
-                // <div
-                //   className="mx-auto grid size-24 place-items-center rounded-full bg-blue-50 text-3xl font-bold text-blue-600"
-                //   aria-label={`ยังไม่มีรูปสมาชิกคนที่ ${member.studentId}`}
-                // >
-                //   {member.studentId}
-                // </div>
                 <div
                   className="mx-auto grid size-24 place-items-center rounded-full bg-blue-50 text-3xl font-bold text-blue-600"
-                  aria-label={`ยังไม่มีรูปของ ${member.fullName}`}
+                  aria-label={`ยังไม่มีรูป ${member.fullName}`}
                 >
                   {member.nickname.trim().charAt(0).toUpperCase() || "?"}
                 </div>
@@ -96,8 +110,12 @@ export default function AboutPage() {
                   <dt className="font-medium text-blue-700">
                     หน้าที่รับผิดชอบ
                   </dt>
-                  <dd className="mt-1 whitespace-pre-line text-slate-600">
-                    {member.responsibility}
+                  <dd className="mt-2 text-left text-slate-600">
+                    <ul className="list-disc space-y-2 pl-5">
+                      {member.responsibility.map((responsibility) => (
+                        <li key={responsibility}>{responsibility}</li>
+                      ))}
+                    </ul>
                   </dd>
                 </div>
               </dl>
@@ -105,9 +123,20 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <p className="mt-4 text-xs text-slate-500">
-          ข้อมูลสมาชิกเป็นข้อมูลตัวอย่าง รอเพิ่มเติมข้อมูลและรูปจริง
-        </p>
+        {/* หน้าที่ร่วมกัน แสดงครั้งเดียวใต้การ์ดสมาชิก */}
+      <div className="mt-5 rounded-lg bg-blue-50 p-5">
+        <h3 className="font-semibold text-blue-700">
+          หน้าที่รับผิดชอบร่วมกัน
+        </h3>
+
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">
+          {sharedResponsibilities.map((responsibility) => (
+            <li key={responsibility}>
+              {responsibility}
+            </li>
+          ))}
+        </ul>
+      </div>
       </section>
 
       <section
