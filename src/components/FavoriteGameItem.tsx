@@ -1,26 +1,45 @@
-import { Link } from 'react-router'
-import { useFavoritesStore } from '../stores/useFavoriteStore'
-import { useGameDetail } from '../hooks/useGameDetail'
+import { Link } from "react-router";
+import { useFavoritesStore } from "../stores/useFavoriteStore";
+import { useGameDetail } from "../hooks/useGameDetail";
 
 // รับเฉพาะ ID จากหน้า Collection เพื่อโหลดรายละเอียดผ่าน Hook ที่ใช้ร่วมกับหน้าอื่น
 interface FavoriteGameItemProps {
-    id: number
+  id: number;
 }
 
 export default function FavoriteGameItem({ id }: FavoriteGameItemProps) {
-    // หนึ่งรายการเป็นหนึ่ง component จึงเรียก Hook ระดับบนสุดได้ ไม่เรียก Hook ใน loop ของ parent
-    const { data: game, isPending, isError, error, refetch, isFetching } = useGameDetail(id)
+  // หนึ่งรายการเป็นหนึ่ง component จึงเรียก Hook ระดับบนสุดได้ ไม่เรียก Hook ใน loop ของ parent
+  const {
+    data: game,
+    isPending,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useGameDetail(id);
 
-    const removeFavorite = useFavoritesStore((state) => state.removeFavorite)
+  const removeFavorite = useFavoritesStore((state) => state.removeFavorite);
 
-      return (
+  return (
     <article className="flex flex-wrap items-center gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className="min-w-0 flex-1">
         {/* แยกโหลด ล้มเหลว ไม่พบเกม และสำเร็จ เพื่อให้แต่ละรายการจัดการปัญหาของตนเอง */}
         {isPending ? (
-          <p role="status" className="text-sm text-slate-500">
-            กำลังโหลดเกม #{id}...
-          </p>
+          <div role="status">
+            <span className="sr-only">กำลังโหลดเกม #{id}...</span>
+
+            <div className="flex items-center gap-4" aria-hidden="true">
+              {/* จำลองรูปปกเกม */}
+              <div className="skeleton size-20 shrink-0 rounded-md" />
+
+              {/* จำลองชื่อ คะแนน และลิงก์รายละเอียด */}
+              <div className="min-w-0 flex-1 space-y-3">
+                <div className="skeleton h-5 w-3/4" />
+                <div className="skeleton h-3 w-12" />
+                <div className="skeleton h-4 w-20" />
+              </div>
+            </div>
+          </div>
         ) : isError ? (
           <div role="alert">
             <p className="text-sm text-red-700">{error.message}</p>
@@ -30,7 +49,7 @@ export default function FavoriteGameItem({ id }: FavoriteGameItemProps) {
               onClick={() => void refetch()}
               disabled={isFetching}
             >
-              {isFetching ? 'กำลังลองใหม่...' : 'ลองใหม่'}
+              {isFetching ? "กำลังลองใหม่..." : "ลองใหม่"}
             </button>
           </div>
         ) : game === null ? (
@@ -78,5 +97,5 @@ export default function FavoriteGameItem({ id }: FavoriteGameItemProps) {
         Remove
       </button>
     </article>
-  )
+  );
 }

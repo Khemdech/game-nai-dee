@@ -129,9 +129,26 @@ export default function HomePage() {
 
       {/* เรียงสถานะโหลด → ผิดพลาด/ลองใหม่ → ไม่พบข้อมูล → รายการเกม */}
       {isPending ? (
-        <p role="status" className="py-10 text-center text-slate-500">
-          กำลังโหลดรายการเกม...
-        </p>
+        <div role="status">
+          <span className="sr-only">กำลังโหลดรายการเกม...</span>
+
+          <div className="grid gap-4 sm:grid-cols-2" aria-hidden="true">
+            {Array.from({ length: 6 }, (_, index) => (
+              <div
+                key={index}
+                className="overflow-hidden rounded-lg border border-slate-200 bg-white"
+              >
+                <div className="skeleton h-32 w-full rounded-none sm:h-36" />
+
+                <div className="space-y-3 p-4">
+                  <div className="skeleton h-5 w-2/3" />
+                  <div className="skeleton h-3 w-1/2" />
+                  <div className="skeleton h-8 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : isError ? (
         <div
           role="alert"

@@ -122,9 +122,15 @@ export default function ComparePage() {
             ) : (
               <>
                 {query.isPending ? (
-                  <p role="status" className="py-10 text-slate-500">
-                    กำลังโหลดเกม #{id}...
-                  </p>
+                  <div role="status">
+                    <span className="sr-only">กำลังโหลดเกม #{id}...</span>
+
+                    <div className="space-y-3" aria-hidden="true">
+                      <div className="skeleton h-40 w-full rounded-md" />
+                      <div className="skeleton h-5 w-3/4" />
+                      <div className="skeleton h-4 w-20" />
+                    </div>
+                  </div>
                 ) : query.isError ? (
                   <div role="alert">
                     <p className="text-sm text-red-700">

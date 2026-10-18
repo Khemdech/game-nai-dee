@@ -1,11 +1,11 @@
-import { useId, useState } from 'react'
-import { useGameSearch } from '../hooks/useGameSearch'
+import { useId, useState } from "react";
+import { useGameSearch } from "../hooks/useGameSearch";
 
 // รับรายการ ID ที่เลือกและ callback ส่ง ID กลับให้ page ตัดสินใจเพิ่มหรือเปลี่ยนเกม
 interface CompareGameSearchProps {
-  label: string
-  selectedIds: number[]
-  onSelect: (id: number) => void
+  label: string;
+  selectedIds: number[];
+  onSelect: (id: number) => void;
 }
 
 export default function CompareGameSearch({
@@ -14,13 +14,13 @@ export default function CompareGameSearch({
   onSelect,
 }: CompareGameSearchProps) {
   // สร้าง ID สำหรับ label/input ที่ไม่ชนกัน เมื่อใช้ component นี้สองฝั่ง
-  const inputId = useId()
+  const inputId = useId();
   // แต่ละ instance มีข้อความค้นหาของตนเอง ช่องซ้ายกับขวาจึงไม่พิมพ์ทับกัน
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("");
   // Hook จัดการเวลาและ API; component นี้รับผิดชอบเลือกสถานะที่แสดงบนหน้าจอ
-  const { query, canSearch, isDebouncing } = useGameSearch(search)
+  const { query, canSearch, isDebouncing } = useGameSearch(search);
   // API ขอสูงสุด 20 เกม แต่แสดงเพียง 5 ผลแรกเพื่อลดความยาวรายการ
-  const games = query.data?.results.slice(0, 5) ?? []
+  const games = query.data?.results.slice(0, 5) ?? [];
 
   return (
     <div className="mb-4 space-y-2">
@@ -42,25 +42,28 @@ export default function CompareGameSearch({
 
       {/* ตรวจคำสั้นและ debounce ก่อนข้อมูล API เพื่อไม่ให้ผลคำค้นเก่าปรากฏเป็นคำตอบของคำใหม่ */}
       {!canSearch ? (
-        <p className="text-xs text-slate-500">
-          พิมพ์อย่างน้อย 2 ตัวอักษร
-        </p>
+        <p className="text-xs text-slate-500">พิมพ์อย่างน้อย 2 ตัวอักษร</p>
       ) : isDebouncing || query.isPending ? (
-        <p role="status" className="text-sm text-slate-500">
-          กำลังค้นหา...
-        </p>
+        <div
+          role="status"
+          className="flex items-center gap-2 text-sm text-slate-500"
+        >
+          <span
+            className="loading loading-spinner loading-sm text-blue-600"
+            aria-hidden="true"
+          />
+          <span>กำลังค้นหา...</span>
+        </div>
       ) : query.isError ? (
         <div role="alert" className="space-y-2">
-          <p className="text-sm text-red-700">
-            {query.error.message}
-          </p>
+          <p className="text-sm text-red-700">{query.error.message}</p>
           <button
             type="button"
             className="btn btn-outline btn-sm"
             onClick={() => void query.refetch()}
             disabled={query.isFetching}
           >
-            {query.isFetching ? 'กำลังลองใหม่...' : 'ลองใหม่'}
+            {query.isFetching ? "กำลังลองใหม่..." : "ลองใหม่"}
           </button>
         </div>
       ) : games.length === 0 ? (
@@ -76,7 +79,7 @@ export default function CompareGameSearch({
           <ul className="max-h-60 overflow-y-auto rounded-lg border border-slate-200">
             {games.map((game) => {
               // เช็ก ID ของทั้งสองฝั่ง เพื่อปิดปุ่มเกมที่เลือกไปแล้ว
-              const isSelected = selectedIds.includes(game.id)
+              const isSelected = selectedIds.includes(game.id);
 
               return (
                 <li
@@ -88,24 +91,22 @@ export default function CompareGameSearch({
                     disabled={isSelected}
                     onClick={() => {
                       // ส่ง ID ให้ parent ก่อน แล้วล้างข้อความค้นหาของช่องนี้ ไม่เก็บข้อมูลเกมใน store
-                      onSelect(game.id)
-                      setSearch('')
+                      onSelect(game.id);
+                      setSearch("");
                     }}
                     className="w-full break-words p-3 text-left text-sm hover:bg-blue-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500"
                   >
-                    <span className="block font-medium">
-                      {game.name}
-                    </span>
+                    <span className="block font-medium">{game.name}</span>
                     {isSelected && (
                       <span className="text-xs">เลือกเกมนี้ไว้แล้ว</span>
                     )}
                   </button>
                 </li>
-              )
+              );
             })}
           </ul>
         </>
       )}
     </div>
-  )
+  );
 }

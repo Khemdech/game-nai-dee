@@ -60,9 +60,43 @@ export default function GameDetailPage() {
           รหัสเกมไม่ถูกต้อง ต้องเป็นจำนวนเต็มบวก
         </p>
       ) : isPending ? (
-        <p role="status" className="py-10 text-center text-slate-500">
-          กำลังโหลดรายละเอียดเกม...
-        </p>
+        <div
+          role="status"
+          className="overflow-hidden rounded-lg border border-slate-200 bg-white"
+        >
+          <span className="sr-only">กำลังโหลดรายละเอียดเกม...</span>
+
+          <div aria-hidden="true">
+            {/* จำลองรูปปกเกม */}
+            <div className="skeleton h-48 w-full rounded-none sm:h-72" />
+
+            <div className="space-y-4 p-5 sm:p-6">
+              {/* จำลองชื่อ แนวเกม และคะแนน */}
+              <div className="skeleton h-8 w-2/3" />
+              <div className="skeleton h-4 w-1/3" />
+              <div className="skeleton h-4 w-1/2" />
+
+              {/* จำลองวันวางจำหน่ายและแพลตฟอร์ม */}
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="skeleton h-12 w-full" />
+                <div className="skeleton h-12 w-full" />
+              </div>
+
+              {/* จำลองคำอธิบาย */}
+              <div className="space-y-2">
+                <div className="skeleton h-4 w-full" />
+                <div className="skeleton h-4 w-full" />
+                <div className="skeleton h-4 w-3/4" />
+              </div>
+
+              {/* จำลองปุ่ม Favorite และ Compare */}
+              <div className="flex flex-wrap gap-2">
+                <div className="skeleton h-8 w-36" />
+                <div className="skeleton h-8 w-36" />
+              </div>
+            </div>
+          </div>
+        </div>
       ) : isError ? (
         <div
           role="alert"
@@ -182,7 +216,8 @@ export default function GameDetailPage() {
             </div>
             <p role="status" className="text-xs text-slate-500">
               เลือกไว้เปรียบเทียบ {compareIds.length}/2 เกม
-              {isCompareFull && " —  you can remove a game from compare to add a new one."}
+              {isCompareFull &&
+                " —  you can remove a game from compare to add a new one."}
             </p>
           </div>
         </article>
